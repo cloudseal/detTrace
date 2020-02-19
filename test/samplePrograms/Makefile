@@ -33,9 +33,9 @@ CXX_BINARIES= $(addsuffix .bin,$(CXX_ROOTS))
 DETTRACE=../../bin/dettrace --
 DIFF_CMD=diff
 
-build: $(SIMPLE_BINARIES) $(PARAM_BINARIES) $(BROADWELL_BINARIES) $(RT_BINARIES) $(CXX_BINARIES)
+CC ?= gcc
 
-CC=clang
+build: $(SIMPLE_BINARIES) $(PARAM_BINARIES) $(BROADWELL_BINARIES) $(RT_BINARIES) $(CXX_BINARIES)
 
 run: test
 test: test-binaries test-scripts
@@ -277,17 +277,18 @@ mq.bin: mq.c
 # parameterized getitimer/setitimer tests
 
 getitimer-real.bin: getitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_REAL -o $@
+	@echo "Ok got CC = $(CC) = $$CC"
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_REAL -o $@
 getitimer-virtual.bin: getitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_VIRTUAL -o $@
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_VIRTUAL -o $@
 getitimer-prof.bin: getitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_PROF -o $@
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_PROF -o $@
 setitimer-real.bin: setitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_REAL -DSIGNAL_TO_HANDLE=SIGALRM -o $@
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_REAL -DSIGNAL_TO_HANDLE=SIGALRM -o $@
 setitimer-virtual.bin: setitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_VIRTUAL -DSIGNAL_TO_HANDLE=SIGVTALRM -o $@
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_VIRTUAL -DSIGNAL_TO_HANDLE=SIGVTALRM -o $@
 setitimer-prof.bin: setitimer.c
-	clang $^ -Wall -g -DWHICH_ITIMER=ITIMER_PROF -DSIGNAL_TO_HANDLE=SIGPROF -o $@
+	$(CC) $^ -Wall -g -DWHICH_ITIMER=ITIMER_PROF -DSIGNAL_TO_HANDLE=SIGPROF -o $@
 
 alarm-ignore.ok: alarm-ignore.bin
 	@echo "   Testing $(basename $<)..."
@@ -317,7 +318,7 @@ shuf.ok:
 # that structs have the same size from the tracee and from ptrace, i.e., that
 # going through libc does not change struct layout.
 check-struct-layout.bin: check-struct-layout.c
-	clang -Wall $^ -o $@ -lrt
+	$(CC) -Wall $^ -o $@ -lrt
 
 .PHONY: build setup run clean test
 clean:

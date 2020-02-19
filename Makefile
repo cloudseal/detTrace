@@ -7,8 +7,6 @@ BUILDID := $(shell git rev-list --count HEAD 2> /dev/null || echo 0)
 PKGNAME := $(NAME)_$(VERSION)-$(BUILDID)
 
 # Compilation options
-# CXX := clang
-# CC := clang
 CXX ?= g++
 CC ?= gcc
 CLANG_TIDY := /bin/echo
